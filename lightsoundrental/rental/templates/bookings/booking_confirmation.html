@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Booking Confirmation{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #121212;
+        color: #fff;
+        font-family: Arial, sans-serif;
+    }
+    .booking-confirmation {
+        background: #1e1e1e;
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px auto;
+        width: 50%;
+        box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+        text-align: center;
+    }
+    .booking-confirmation h2 {
+        color: #d730f8;
+    }
+    .booking-details p {
+        margin: 10px 0;
+    }
+    .status {
+        font-weight: bold;
+        padding: 5px;
+        border-radius: 5px;
+    }
+    .status.returned {
+        color: #0f0;
+    }
+    .status.pending {
+        color: #ffa500;
+    }
+    .status.active {
+        color: #00f;
+    }
+    .button {
+        display: inline-block;
+        padding: 10px 15px;
+        background: #d730f8;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: 0.3s;
+        margin-top: 10px;
+        border: none;
+        cursor: pointer;
+    }
+    .button:hover {
+        background: #a620c4;
+    }
+</style>
+
+<div class="booking-confirmation">
+    <h2>Booking Confirmed!</h2>
+    <div class="booking-details">
+        <p>Product: {{ booking.product.name }}</p>
+        <p>Start Date: {{ booking.start_date }}</p>
+        <p>End Date: {{ booking.end_date }}</p>
+        <p>Total Price: ${{ booking.total_price }}</p>
+        
+        {% if booking.returned %}
+            <p class="status returned">Status: Returned</p>
+        {% elif booking.end_date < today %}
+            <p class="status pending">Status: Pending Return</p>
+            {% if booking.product.shop_owner == user %}
+                <a href="{% url 'booking_return' booking.id %}" class="button">Process Return</a>
+            {% endif %}
+        {% else %}
+            <p class="status active">Status: Active</p>
+        {% endif %}
+    </div>
+    
+    <div class="booking-actions">
+        <a href="{% url 'product_list' %}" class="button">Back to Products</a>
+        {% if user == booking.user %}
+            <a href="{% url 'user_bookings' %}" class="button">View My Bookings</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

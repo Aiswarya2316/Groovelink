@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+<title>Groovelink | Contact Us</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="{% static 'css/reset.css' %}" type="text/css" media="all">
+<link rel="stylesheet" href="{% static 'css/layout.css' %}" type="text/css" media="all">
+<link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" media="all">
+
+<style>
+    body {
+        background-color: #121212;
+        color: #fff;
+        font-family: Arial, sans-serif;
+    }
+    .header, .footer {
+        background-color: #1DB954;
+        padding: 20px;
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+    }
+    nav ul {
+        display: flex;
+        justify-content: center;
+        list-style: none;
+        padding: 0;
+    }
+    nav ul li {
+        margin: 0 15px;
+    }
+    nav ul li a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 18px;
+    }
+    .container {
+        width: 80%;
+        margin: auto;
+    }
+    .hero {
+        text-align: center;
+        padding: 50px;
+    }
+    .hero h2 {
+        font-size: 36px;
+        color: #1DB954;
+    }
+    .form-container {
+        background: #222;
+        padding: 30px;
+        border-radius: 10px;
+        width: 60%;
+        margin: auto;
+        text-align: center;
+    }
+    .form-container input, .form-container textarea {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: none;
+        border-radius: 5px;
+    }
+    .form-container button {
+        background: #1DB954;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+    <div class="header">Groovelink</div>
+    <nav>
+        <ul>
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'about' %}">About</a></li>
+            <li><a href="{% url 'contact' %}">Contacts</a></li>
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'shop_owner_login' %}">Shop Login</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <div class="hero">
+            <h2>Contact Us</h2>
+            <p>We’d love to hear from you! Reach out to us with any questions or feedback.</p>
+        </div>
+        <div class="form-container">
+            <form>
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Your Email" required>
+                <textarea rows="5" placeholder="Your Message" required></textarea>
+                <button type="submit">Send Message</button>
+            </form>
+        </div>
+    </div>
+    <div class="footer">&copy; 2025 Groovelink. All Rights Reserved.</div>
+</body>
+</html>

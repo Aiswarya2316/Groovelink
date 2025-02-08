@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Shop Owner Login{% endblock %}
+
+{% block content %}
+
+<style>
+
+    /* Global Styles */
+    body {
+        background-color: #121212;
+        color:rgb(16, 110, 82);
+        font-family: Arial, sans-serif;
+    }
+    
+    /* Container for the shop owner login form */
+    .shop-owner-login-container {
+        max-width: 400px;
+        margin: 100px auto;
+        padding: 20px;
+        background-color: #1e1e1e;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+    
+    /* Title */
+    .login-title {
+        text-align: center;
+        color: #ffffff;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    
+    /* Form */
+    .login-form .form-fields {
+        margin-bottom: 20px;
+    }
+    
+    /* Input fields */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        background-color: #333;
+        border: 1px solid #444;
+        border-radius: 4px;
+        color: #ddd;
+    }
+    
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+        border-color: #61dafb;
+        outline: none;
+    }
+    
+    /* Button */
+    .login-button {
+        width: 100%;
+        padding: 12px;
+        background-color: #61dafb;
+        border: none;
+        border-radius: 4px;
+        color: #1f1f1f;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    .login-button:hover {
+        background-color: #4fa3e4;
+    }
+    
+    /* Links */
+    .signup-link {
+        text-align: center;
+        margin-top: 15px;
+    }
+    
+    .signup-button {
+        color: #61dafb;
+        text-decoration: none;
+    }
+    
+    .signup-button:hover {
+        text-decoration: underline;
+    }
+
+</style>
+
+<div class="shop-owner-login-container">
+    <h2 class="login-title">Shop Owner Login</h2>
+    <form method="post" class="login-form">
+        {% csrf_token %}
+        <div class="form-fields">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="login-button">Login</button>
+    </form>
+    <p class="signup-link">Don't have a shop owner account? <a href="{% url 'shop_owner_signup' %}" class="signup-button">Sign Up as Shop Owner</a></p>
+</div>
+{% endblock %}
+
+
+
+
+

@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}My Bookings{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #121212;
+        color: #fff;
+        font-family: Arial, sans-serif;
+    }
+    .user-bookings {
+        background: #1e1e1e;
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px auto;
+        width: 80%;
+        box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+    }
+    .user-bookings h2 {
+        color: #d730f8;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background: #222;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    th, td {
+        padding: 15px;
+        text-align: center;
+        border-bottom: 1px solid #333;
+    }
+    th {
+        background: #d730f8;
+        color: white;
+    }
+    td{
+        padding:20px !important;
+    }
+    tr:hover {
+        background: #333;
+    }
+    .button {
+        display: inline-block;
+        padding: 10px 15px;
+        background: #d730f8;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: 0.3s;
+    }
+    .button:hover {
+        background: #a620c4;
+    }
+</style>
+
+<div class="user-bookings">
+    <h2>My Bookings</h2>
+    
+    {% if bookings %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Booking Dates</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.product.name }}</td>
+                        <td>
+                            {{ booking.start_date|date:"M d" }} - 
+                            {{ booking.end_date|date:"M d, Y" }}
+                        </td>
+                        <td>${{ booking.total_price }}</td>
+                        <td>
+                            {% if booking.returned %}
+                                Returned
+                            {% elif booking.end_date >= today %}
+                                Active
+                            {% else %}
+                                Pending Return
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if booking.returned and not booking.review %}
+                                <a href="{% url 'create_review' booking.id %}" class="button">Write Review</a>
+                            {% elif booking.review %}
+                                Review Submitted
+                            {% else  %}
+                                Review after returned
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You haven't made any bookings yet.</p>
+        <a href="{% url 'product_list' %}" class="button">Browse Products</a>
+    {% endif %}
+</div>
+{% endblock %}

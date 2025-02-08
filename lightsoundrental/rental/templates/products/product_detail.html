@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #121212;
+        color: #fff;
+        font-family: Arial, sans-serif;
+    }
+    .product-detail, .reviews-section, .availability-calendar {
+        background: #1e1e1e;
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px auto;
+        width: 80%;
+        box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+    }
+    .product-detail h2, .reviews-section h3, .availability-calendar h3 {
+        color: #d730f8;
+    }
+    .product-detail img {
+        max-width: 100%;
+        height: 200px;
+        border-radius: 10px;
+        margin-bottom: 3rem;
+    }
+    .product-detail p {
+        font-size: 16px;
+        margin: 10px 0;
+    }
+    .product-detail  form {
+        background: #222;
+        padding: 15px;
+        border-radius: 10px;
+    }
+    .product-detail  input, button {
+        padding: 10px;
+        margin: 10px 0;
+        width: 100%;
+        border-radius: 5px;
+        border: none;
+    }
+    .product-detail  input {
+        background: #333;
+        color: #fff;
+    }
+   .product-detail button {
+        background: #d730f8;
+        color: #fff;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .product-detail   button:hover {
+        background: #a620c4;
+    }
+    .error {
+        color: red;
+    }
+    .review {
+        background: #333;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+    }
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        color: #d730f8;
+    }
+    .review-comment {
+        font-size: 14px;
+        color: #ccc;
+    }
+    .availability-calendar ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    .availability-calendar li {
+        background: #d730f8;
+        color: #fff;
+        padding: 5px;
+        margin: 5px 0;
+        border-radius: 5px;
+    }
+</style>
+
+<div class="product-detail">
+    <h2>{{ product.name }}</h2>
+    {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+    {% endif %}
+    <h3>Product Details:</h3>
+    <p>{{ product.description }}</p>
+    <p>Dimensions: {{ product.dimensions }}</p>
+    <p>Installation Instructions: {{ product.installation_instructions }}</p>
+    <p>Compatibility: {{ product.compatibility }}</p>
+    <p>Power Rating: {{ product.power_rating }}</p>
+    <p>Price per day: ${{ product.price_per_day }}</p>
+    <p>Available Units: {{ product.available_quantity }} / {{ product.total_quantity }}</p>
+    <p>pincode: {{ product.pincode }}</p>
+
+    <h3>Shop Owner Details:</h3>
+    <p>Shop: {{ shop_owner.username }}</p>
+    <p>Phone Number: {{ shop_owner.phone_number }}</p>
+    <p>Location: {{ shop_owner.location }}</p>
+
+    {% if user.is_authenticated and not user.is_shop_owner %}
+        {% if product.available_quantity > 0 %}
+            <form method="post">
+                {% csrf_token %}
+                <label for="start_date">Start Date:</label>
+                <input type="date" id="start_date" name="start_date" required min="{{ today|date:'Y-m-d' }}">
+                <label for="end_date">End Date:</label>
+                <input type="date" id="end_date" name="end_date" required min="{{ today|date:'Y-m-d' }}">
+                <h3 style="font-size: 24px; margin-bottom: 20px;margin-top: 20px; text-align: left;">Payment Details</h3>
+
+                <label for="card_number">Card Number:</label>
+                <input type="text" maxlength="10" pattern="\d{10}" id="card_number" name="card_number" placeholder="Enter card number" required>
+
+
+                <!-- Expiration Date -->
+                <label for="expiry_date">Expiration Date:</label>
+                <input type="month" id="expiry_date" name="expiry_date" required>
+
+                <!-- CVV -->
+                <label for="cvv">CVV (3 or 4 digits):</label>
+                <input type="text" id="cvv" name="cvv" placeholder="Enter CVV" required maxlength="4" pattern="\d{3,4}" title="CVV should be 3 or 4 digits.">
+
+                <button type="submit">Book Now</button>
+            </form>
+        {% else %}
+            <p class="error">Currently out of stock</p>
+        {% endif %}
+    {% elif not user.is_authenticated %}
+        <p>Please <a href="{% url 'login' %}" style="color:#d730f8;">login</a> to book this product.</p>
+    {% endif %}
+</div>
+
+<div class="reviews-section">
+    <h3>Reviews</h3>
+    {% if reviews %}
+        <div class="average-rating">
+            <p>Average Rating: {{ average_rating|floatformat:1 }} / 5 ({{ reviews.count }} reviews)</p>
+        </div>
+        <div class="reviews-list">
+            {% for review in reviews %}
+                <div class="review">
+                    <div class="review-header">
+                        <span class="rating">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+                            {% endfor %}
+                        </span>
+                        <span class="reviewer">by {{ review.user.username }}</span>
+                        <span class="date">{{ review.created_at|date:"F d, Y" }}</span>
+                    </div>
+                    <p class="review-comment">{{ review.comment }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No reviews yet.</p>
+    {% endif %}
+</div>
+
+{% if booked_dates %}
+<div class="availability-calendar">
+    <h3>Booking Calendar</h3>
+    <p>The following dates are fully booked:</p>
+    <ul>
+        {% for date in booked_dates %}
+            <li>{{ date|date:"F d, Y" }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+{% endblock %}

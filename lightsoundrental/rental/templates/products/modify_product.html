@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}Modify Product{% endblock %}
+
+{% block content %}
+
+<style>
+    .addp  body {
+        background-color: black;
+        color: #333;
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .addp   h2 {
+        color: #4a90e2;
+        text-align: center;
+        margin-top: 20px;
+        font-size: 2.5em;
+    }
+
+    .addp  form {
+        max-width: 450px;
+        margin: 20px auto;
+        padding: 50px;
+        background-color: #292424;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .addp  form p {
+        margin-bottom: 15px;
+    }
+
+    .addp  form label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #555;
+    }
+
+    .addp form input[type="text"],
+    .addp   form input[type="number"],
+    .addp form textarea,
+    .addp form input[type="file"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1em;
+        margin-top: 5px;
+    }
+
+    .addp  form textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .addp  form button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #4a90e2;
+        color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        font-size: 1.1em;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+    .addp  form button:hover {
+        background-color: #357abd;
+    }
+
+    .addp  .errorlist {
+        color: #ff6b6b;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .addp  .errorlist li {
+        margin-bottom: 5px;
+    }
+</style>
+<div class="addp">
+
+<h2>Modify Product {{ product.name }}</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}  <!-- This will render the form fields as paragraphs -->
+    <button type="submit">Save Changes</button>
+</form>
+
+<a href="{% url 'product_detail' product.pk %}">Cancel</a>
+
+</div>
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}Shop Owner Sign Up{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Global Styles */
+body {
+    background-color: #121212;
+    color: #e0e0e0;
+    font-family: Arial, sans-serif;
+}
+
+/* Container for the shop owner sign-up form */
+.shop-owner-signup-container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 20px;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Title */
+.signup-title {
+    text-align: center;
+    color: #ffffff;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Form */
+.signup-form .form-fields {
+    margin-bottom: 20px;
+}
+
+.signup-form .form-field {
+    margin-bottom: 15px;
+}
+
+/* Input fields */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    background-color: #333;
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: #ddd;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: #61dafb;
+    outline: none;
+}
+
+/* Button */
+.signup-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #61dafb;
+    border: none;
+    border-radius: 4px;
+    color: #1f1f1f;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.signup-button:hover {
+    background-color: #4fa3e4;
+}
+
+/* Links */
+.login-link, .user-signup-link {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.login-button, .user-signup-button {
+    color: #61dafb;
+    text-decoration: none;
+}
+
+.login-button:hover, .user-signup-button:hover {
+    text-decoration: underline;
+}
+
+/* Help text */
+.help-text {
+    font-size: 12px;
+    color: #888;
+}
+
+/* Error messages */
+.error {
+    color: #ff5c5c;
+    font-size: 12px;
+}
+
+</style>
+
+<div class="shop-owner-signup-container">
+    <h2 class="signup-title">Sign Up as Shop Owner</h2>
+    <form method="post" class="signup-form">
+        {% csrf_token %}
+        <div class="form-fields">
+            {% for field in form %}
+                <div class="form-field">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="help-text">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="signup-button">Sign Up as Shop Owner</button>
+    </form>
+    <p class="login-link">Already have a shop owner account? <a href="{% url 'shop_owner_login' %}" class="login-button">Login</a></p>
+    <p class="user-signup-link">Want to sign up as a regular user? <a href="{% url 'user_signup' %}" class="user-signup-button">Sign up as User</a></p>
+</div>
+{% endblock %}

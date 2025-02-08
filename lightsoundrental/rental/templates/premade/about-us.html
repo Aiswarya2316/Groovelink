@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+<title>Groovelink | About Us</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="{% static 'css/reset.css' %}" type="text/css" media="all">
+<link rel="stylesheet" href="{% static 'css/layout.css' %}" type="text/css" media="all">
+<link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" media="all">
+
+<style>
+    body {
+        background-color: #121212;
+        color: #fff;
+        font-family: Arial, sans-serif;
+    }
+    .header, .footer {
+        background-color: #1DB954;
+        padding: 20px;
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+    }
+    nav ul {
+        display: flex;
+        justify-content: center;
+        list-style: none;
+        padding: 0;
+    }
+    nav ul li {
+        margin: 0 15px;
+    }
+    nav ul li a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 18px;
+    }
+    .container {
+        width: 80%;
+        margin: auto;
+    }
+    .hero {
+        text-align: center;
+        padding: 50px;
+    }
+    .hero h2 {
+        font-size: 36px;
+        color: #1DB954;
+    }
+    .content {
+        margin-top: 30px;
+    }
+    .box {
+        background: #222;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+</style>
+</head>
+<body>
+    <div class="header">Groovelink</div>
+    <nav>
+        <ul>
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'about' %}">About</a></li>
+            <li><a href="{% url 'contact' %}">Contacts</a></li>
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'shop_owner_login' %}">Shop Login</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <div class="hero">
+            <h2>About Groovelink</h2>
+            <p>Discover the story behind Groovelink and how we revolutionize music streaming.</p>
+        </div>
+        <div class="content">
+            <div class="box">
+                <h3>Our Mission</h3>
+                <p>To bring the best music experience to everyone, anywhere.</p>
+            </div>
+            <div class="box">
+                <h3>Meet Our Team</h3>
+                <p>Our passionate team works hard to curate the best music experience.</p>
+            </div>
+        </div>
+    </div>
+    <div class="footer">&copy; 2025 Groovelink. All Rights Reserved.</div>
+</body>
+</html>

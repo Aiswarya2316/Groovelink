@@ -1,0 +1,282 @@
+{% extends 'base.html' %}
+
+{% block title %}Shop Owner Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    /* Global Styles */
+    body {
+        background-color: #0a0a0a;
+        color: #e0e0e0;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .dashboard-container {
+        padding: 30px;
+        text-align: center;
+    }
+
+    .welcome-section h1 {
+        color: #00ff00;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        text-shadow: 0 0 10px #00ff00;
+    }
+
+    /* Stats Overview */
+    .stats-overview {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #111, #1a1a1a);
+        padding: 20px;
+        border-radius: 10px;
+        flex: 1 1 calc(20% - 20px);
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        text-align: center;
+    }
+
+    .stat-card h3 {
+        color: #00ff00;
+        margin-bottom: 10px;
+    }
+
+    .stat-card p {
+        color: #ffffff;
+        font-size: 1.5em;
+    }
+
+    /* Dashboard Sections */
+    .dashboard-section {
+        background-color: #1e1e1e;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .section-header h2 {
+        color: #00ff00;
+        text-shadow: 0 0 5px #00ff00;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1em;
+        font-weight: bold;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .btn-primary {
+        background-color: #00ff00;
+        color: #111;
+    }
+
+    .btn-primary:hover {
+        background-color: #00cc00;
+        transform: scale(1.05);
+    }
+
+    .btn-secondary {
+        background-color: #008000;
+        color: #ffffff;
+    }
+
+    .btn-secondary:hover {
+        background-color: #006400;
+        transform: scale(1.05);
+    }
+
+    /* Table Styles */
+    .products-list, .booking-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .products-list th, .booking-table th {
+        background-color: #004d00;
+        color: #ffffff;
+        padding: 10px;
+        text-align: left;
+    }
+
+    .products-list td, .booking-table td {
+        padding: 10px;
+        border-bottom: 1px solid #333;
+    }
+
+    /* Status Badges */
+    .status {
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 0.9em;
+        text-shadow: 0 0 5px #00ff00;
+    }
+
+    .status.available {
+        background-color: #00ff00;
+        color: #000;
+    }
+
+    .status.unavailable {
+        background-color: #ff4444;
+        color: #ffffff;
+    }
+
+    .status.returned {
+        background-color: #00ff00;
+        color: #000;
+    }
+
+    .status.active {
+        background-color: #2196f3;
+        color: #ffffff;
+    }
+
+    .status.pending-return {
+        background-color: #ff9800;
+        color: #ffffff;
+    }
+
+    /* Action Links */
+    .action-button {
+        color: #00ff00;
+        text-decoration: none;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .action-button:hover {
+        text-decoration: underline;
+        font-weight: bold;
+    }
+</style>
+
+<div class="dashboard-container">
+    <div class="welcome-section">
+        <h1>Welcome, {{ user.username }}</h1>
+    </div>
+
+    <!-- Statistics Overview -->
+    <div class="stats-overview">
+        <div class="stat-card">
+            <h3>Total Revenue</h3>
+            <p>${{ total_revenue|floatformat:2 }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>30-Day Revenue</h3>
+            <p>${{ recent_revenue|floatformat:2 }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Products</h3>
+            <p>{{ total_products }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Active Bookings</h3>
+            <p>{{ active_bookings }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Bookings</h3>
+            <p>{{ total_bookings }}</p>
+        </div>
+    </div>
+
+    <!-- Products Section -->
+    <div class="dashboard-section">
+        <div class="section-header">
+            <h2>Your Products</h2>
+            <a href="{% url 'product_create' %}" class="btn btn-primary">Add New Product</a>
+        </div>
+
+        <div class="products-list">
+            {% if products %}
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Price/Day</th>
+                            <th>Status</th>
+                            <th>Available Quantity</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                            <tr>
+                                <td>{{ product.name }}</td>
+                                <td>${{ product.price_per_day }}</td>
+                                <td>
+                                    {% if product.is_available %}
+                                        <span class="status available">Available</span>
+                                    {% else %}
+                                        <span class="status unavailable">Unavailable</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ product.available_quantity }}</td>
+                                <td>
+                                    <a href="{% url 'product_detail' product.pk %}" class="action-button">View</a>
+                                    <a href="{% url 'modify_product' product.pk %}" class="action-button">Modify</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No products added yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Recent Bookings Section -->
+    <div class="dashboard-section">
+        <h2>Recent Bookings (Last 30 Days)</h2>
+        {% if recent_bookings %}
+            <table class="booking-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Customer</th>
+                        <th>Dates</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in recent_bookings %}
+                        <tr>
+                            <td>{{ booking.product.name }}</td>
+                            <td>{{ booking.user.username }}</td>
+                            <td>{{ booking.start_date|date:"M d" }} - {{ booking.end_date|date:"M d, Y" }}</td>
+                            <td>${{ booking.total_price }}</td>
+                            <td>
+                                <span class="status active">Active</span>
+                            </td>
+                            <td>
+                                <a href="{% url 'booking_return' booking.id %}" class="action-button">Process Return</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No recent bookings.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

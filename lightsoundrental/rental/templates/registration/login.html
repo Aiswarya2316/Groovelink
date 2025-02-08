@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+<title>Groovelink | Login</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="{% static 'css/reset.css' %}" type="text/css" media="all">
+<link rel="stylesheet" href="{% static 'css/layout.css' %}" type="text/css" media="all">
+<link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" media="all">
+
+<style>
+    body {
+        background-color: #121212;
+        color: #e0e0e0;
+        font-family: Arial, sans-serif;
+    }
+    .header, .footer {
+        background-color: #1DB954;
+        padding: 20px;
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+    }
+    .login-container {
+        max-width: 400px;
+        margin: 100px auto;
+        padding: 50px;
+        background-color: #1e1e1e;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        text-align: center;
+    }
+    .login-title {
+        color: #1DB954;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        background-color: #333;
+        border: 1px solid #444;
+        border-radius: 4px;
+        color: #ddd;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+        border-color: #1DB954;
+        outline: none;
+    }
+    .login-button {
+        width: 100%;
+        padding: 12px;
+        background-color: #1DB954;
+        border: none;
+        border-radius: 4px;
+        color: #1f1f1f;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .login-button:hover {
+        background-color: #17a74b;
+    }
+    .signup-link {
+        text-align: center;
+        margin-top: 10px;
+    }
+    .signup-button {
+        color: #1DB954;
+        text-decoration: none;
+    }
+    .signup-button:hover {
+        text-decoration: underline;
+    }
+</style>
+</head>
+<body>
+    <div class="header">Groovelink</div>
+    <div class="login-container">
+        <h2 class="login-title">Login</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="login-button">Login</button>
+        </form>
+        <p class="signup-link">Don't have an account? <a href="{% url 'user_signup' %}" class="signup-button">Sign Up</a></p>
+    </div>
+    <div class="footer">&copy; 2025 Groovelink. All Rights Reserved.</div>
+</body>
+</html>
