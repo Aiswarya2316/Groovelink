@@ -10,12 +10,12 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            background-color: #f8f9fa;
-            color: #333;
+            background-color: #0d0d0d;
+            color: #fff;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -24,11 +24,11 @@
             padding: 20px;
         }
 
-        /* Full-width Navigation Bar */
+        /* Navigation Bar */
         nav {
             width: 100%;
-            background: #222;
-            padding: 15px 20px;
+            background: #111;
+            padding: 15px 50px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -36,7 +36,7 @@
             top: 0;
             left: 0;
             z-index: 1000;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
         }
 
         .nav-links {
@@ -45,12 +45,12 @@
         }
 
         .nav-links a {
-            color: white;
+            color: #ff4c4c;
             text-decoration: none;
-            margin: 0 15px;
+            font-size: 16px;
             font-weight: bold;
+            margin: 0 15px;
             transition: 0.3s;
-            padding: 10px;
         }
 
         .nav-links a:hover {
@@ -64,20 +64,27 @@
 
         /* Logo */
         .logo img {
-            height: 40px;
+            height: 45px;
             width: auto;
             margin-right: 15px;
         }
 
-        /* Center Content */
+        /* Form Container */
         .content {
-            margin-top: 80px;
+            margin-top: 100px;
             width: 100%;
-            max-width: 600px;
-            background: white;
-            padding: 25px;
+            max-width: 500px;
+            background: #1c1c1c;
+            padding: 30px;
             border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #ffcc00;
         }
 
         /* Form Styling */
@@ -91,22 +98,32 @@
             width: 100%;
             padding: 12px;
             margin: 10px 0;
-            border: 1px solid #ccc;
+            border: none;
             border-radius: 5px;
             font-size: 16px;
+            background: #333;
+            color: white;
         }
 
+        form input:focus,
+        form select:focus,
+        form textarea:focus {
+            outline: 2px solid #ffcc00;
+            background: #444;
+        }
+
+        /* Submit Button */
         button {
             width: 100%;
             padding: 12px;
-            background: #222;
+            background: #ff4c4c;
             color: white;
             border: none;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
             border-radius: 5px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: 0.3s ease-in-out;
         }
 
         button:hover {
@@ -114,7 +131,7 @@
             color: black;
         }
 
-        /* Responsive Navigation */
+        /* Responsive Design */
         @media (max-width: 768px) {
             nav {
                 flex-direction: column;
@@ -129,6 +146,10 @@
             .nav-links a {
                 display: block;
                 margin: 5px 0;
+            }
+
+            .content {
+                max-width: 90%;
             }
         }
 
@@ -152,7 +173,7 @@
 
     <!-- Form Content -->
     <div class="content">
-        <h2 style="text-align:center; color:#222;">Manage Your Band</h2>
+        <h2>Manage Your Band</h2>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
