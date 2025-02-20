@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bands</title>
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Navbar */
+        nav {
+            width: 100%;
+            background: #222;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+            transition: 0.3s;
+            padding: 10px;
+        }
+
+        .nav-links a:hover {
+            color: #ffcc00;
+        }
+
+        .logout a {
+            color: #ffcc00;
+            font-weight: bold;
+        }
+
+        /* Content */
+        .content {
+            margin-top: 120px;
+            width: 90%;
+            max-width: 1100px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            color: #222;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #222;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
+            transition: 0.3s;
+        }
+
+        img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 2px solid #ddd;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: flex;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-links a {
+                display: block;
+                margin: 5px 0;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            img {
+                width: 60px;
+                height: 60px;
+            }
+        }
+        /* Logo */
+        .logo img {
+            height: 40px;
+            width: auto;
+            margin-right: 15px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-links">
+            <a class="logo" href="../stafhome"><img src="../static/unnamed.png" alt="Logo"></a>
+            <a href="../addband">Add Band</a>
+            <a href="../viewband">View Bands</a>
+            <a href="../addproduct">Add Instrument</a>
+            <a href="../viewproduct">View Instruments</a>
+        </div>
+        <div class="logout">
+            <a href="../logout">Logout</a>
+        </div>
+    </nav>
+
+    <div class="content">
+        <h2>My Bands</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Genre</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for band in bands %}
+                <tr>
+                    <td>
+                        {% if band.image %}
+                            <img src="{{ band.image.url }}" alt="{{ band.name }}">
+                        {% else %}
+                            No Image Available
+                        {% endif %}
+                    </td>
+                    <td>{{ band.name }}</td>
+                    <td>{{ band.genre }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
