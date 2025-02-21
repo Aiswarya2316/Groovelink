@@ -111,8 +111,23 @@ def customerhome(request):
     return render(request,'customer/customerhome.html')
 
 
+from django.shortcuts import render
+from .models import Customer, Product, BandTeam, Order
+
 def adminhome(request):
-    return render(request,'admin/adminhome.html')
+    total_users = Customer.objects.count()
+    total_products = Product.objects.count()
+    total_bands = BandTeam.objects.count()
+    total_orders = Order.objects.count()
+
+    context = {
+        'total_users': total_users,
+        'total_products': total_products,
+        'total_bands': total_bands,
+        'total_orders': total_orders
+    }
+    return render(request, 'admin/adminhome.html', context)
+
 
 
 
@@ -190,3 +205,27 @@ def view_products(request):
     staf = Staf.objects.get(id=request.session["user_id"])
     products = Product.objects.filter(staf=staf)
     return render(request, "staf/view_products.html", {"products": products})
+
+
+def about(request):
+    return render(request,'customer/about.html')
+
+def viewbands(request):
+    band=BandTeam.objects.all()
+    return render(request,'customer/viewbands.html',{'band':band})
+
+def viewproducts(request):
+    product=Product.objects.all()
+    return render(request,'customer/viewproducts.html',{'product':product})
+
+def products(request):
+    pro=Product.objects.all()
+    return render(request,'admin/products.html',{'pro':pro})
+
+def bands(request):
+    bnd=BandTeam.objects.all()
+    return render(request,'admin/bands.html',{'bnd':bnd})
+
+def users(request):
+    usr=Customer.objects.all()
+    return render(request,'admin/users.html',{'usr':usr})

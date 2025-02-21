@@ -57,18 +57,6 @@ class Product(models.Model):
         return self.name
     
 
-class Cart(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="cart")
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
-    added_on = models.DateTimeField(auto_now_add=True)
-
-    def total_price(self):
-        return self.quantity * self.product.price
-
-    def __str__(self):
-        return f"{self.customer.name} - {self.product.name}"
-
 
 class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="orders")

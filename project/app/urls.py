@@ -14,5 +14,14 @@ urlpatterns = [
     path("viewband/", views.view_band_teams, name="view_band_teams"),
     path("addproduct/", views.add_product, name="add_product"),
     path("viewproduct/", views.view_products, name="view_products"),
+    path('about/',views.about,name='about'),
+    path('viewbands/',views.viewbands,name='viewbands'),
+    path('viewproducts/',views.viewproducts,name='viewproducts'),
+    path('products/',views.products,name='products'),
+    path('bands/',views.bands,name='bands'),
+    path('users/',views.users,name='users'),
+
+
+
 
 ]

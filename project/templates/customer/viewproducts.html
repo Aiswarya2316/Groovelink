@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Products - Groove Link</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #121212;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+        }
+        .navbar {
+            background: #1db954;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            color: #fff;
+        }
+        .card {
+            background-color: #1e1e1e;
+            border: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: 12px;
+            overflow: hidden;
+            padding: 15px;
+            text-align: center;
+        }
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 4px 15px rgba(255, 204, 0, 0.3);
+        }
+        .card img {
+            height: 220px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .card-title, .card-text {
+            color: #ffcc00; /* Product Name & Description in Yellow */
+            font-weight: bold;
+        }
+        .price {
+            color: #ff8800;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .buy-btn {
+            background-color: #ffcc00;
+            color: #121212;
+            font-weight: bold;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        .buy-btn:hover {
+            background-color: #ffdd33;
+        }
+        .footer {
+            background: #1db954;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 30px;
+            border-top: 3px solid #ffcc00;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="../customerhome">Groove Link</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link text-white" href="../about">About Us</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="../viewbands">View Bands</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="../viewproducts">View Products</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="../viewbookings">My Bookings</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="../vieworders">My Orders</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="../logout">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Products Section -->
+<div class="container mt-5">
+    <h2 class="text-center mb-4 text-warning">Browse Exclusive Music Gear</h2>
+    <div class="row">
+        {% for product in product %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">🎸 {{ product.name }}</h5>
+                    <p class="price">💲{{ product.price }}</p>
+                    <p class="card-text">📜 {{ product.description }}</p>
+                    <a href="../buy/{{ product.id }}" class="buy-btn">Buy Now</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <p>&copy; 2025 Groove Link. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>

@@ -3,175 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Admin Dashboard - Groove Link</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        body {
+            background-color: #121212;
+            color: #fff;
             font-family: 'Arial', sans-serif;
         }
-
-        body {
-            display: flex;
-            background: #f4f4f4;
-        }
-
         .sidebar {
-            width: 220px;
+            width: 250px;
             height: 100vh;
-            background: #222;
-            color: white;
-            padding-top: 20px;
             position: fixed;
-            transition: width 0.3s;
+            background: #1e1e1e;
+            padding-top: 20px;
         }
-
-        .sidebar h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .sidebar ul li {
-            padding: 12px 20px;
+        .sidebar a {
+            display: block;
+            color: #ffcc00;
+            padding: 15px;
+            text-decoration: none;
+            font-weight: bold;
             transition: 0.3s;
         }
-
-        .sidebar ul li:hover {
+        .sidebar a:hover {
             background: #ffcc00;
-            cursor: pointer;
+            color: #121212;
         }
-
-        .sidebar ul li a {
-            color: white;
-            text-decoration: none;
-            display: block;
-        }
-
-        .sidebar ul li:hover a {
-            color: #222;
-        }
-
-        .main-content {
-            margin-left: 220px;
-            flex: 1;
+        .content {
+            margin-left: 260px;
             padding: 20px;
-            transition: margin-left 0.3s;
         }
-
-        .topbar {
-            display: flex;
-            justify-content: space-between;
-            background: #222;
+        .card {
+            background-color: #1e1e1e;
+            color: #ffcc00;
+            border: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 4px 15px rgba(255, 204, 0, 0.3);
+        }
+        .top-navbar {
+            background: #1db954;
+            padding: 15px;
+            text-align: right;
+        }
+        .top-navbar a {
             color: white;
-            padding: 15px 20px;
-            align-items: center;
-            position: fixed;
-            width: calc(100% - 220px);
-            top: 0;
-            left: 220px;
-            z-index: 1000;
-            transition: width 0.3s, left 0.3s;
-        }
-
-        .dashboard {
-            margin-top: 70px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .widget {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .chart-container {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
+            font-weight: bold;
+            text-decoration: none;
+            margin-right: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h2>Admin Panel</h2>
-        <ul>
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Users</a></li>
-            <li><a href="#">Products</a></li>
-            <li><a href="#">Orders</a></li>
-            <li><a href="#">Reports</a></li>
-            <li><a href="#">Settings</a></li>
-        </ul>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h3 class="text-center text-warning">Admin Panel</h3>
+    <a href="../dashboard">📊 Dashboard</a>
+    <a href="../users">👥 Users</a>
+    <a href="../orders">📦 Orders</a>
+    <a href="../products">🎸 Products</a>
+    <a href="../bands">📑 Bands</a>
+    <a href="../settings">⚙️ Bookings</a>
+    <a href="../logout">🚪 Logout</a>
+</div>
+
+<!-- Main Content -->
+<div class="content">
+    
+    <!-- Top Navbar -->
+    <div class="top-navbar">
+        <a href="../logout">🚪 Logout</a>
     </div>
 
-    <div class="main-content">
-        <div class="topbar">
-            <h2>Dashboard</h2>
-        </div>
+    <!-- Dashboard Overview -->
+    <div class="container mt-4">
+        <h2 class="text-warning">Dashboard Overview</h2>
+        <div class="row mt-3">
+            
+            <div class="col-md-3">
+                <div class="card p-3">
+                    <h5>📦 Total Orders</h5>
+                    <h3>{{ total_orders }}</h3>
+                </div>
+            </div>
 
-        <div class="dashboard">
-            <div class="widget">
-                <h3>Total Users</h3>
-                <p>2</p>
+            <div class="col-md-3">
+                <div class="card p-3">
+                    <h5>🎸 Products</h5>
+                    <h3>{{ total_products }}</h3>
+                </div>
             </div>
-            <div class="widget">
-                <h3>Products</h3>
-                <p>2</p>
-            </div>
-            <div class="widget">
-                <h3>Sales</h3>
-                <p>2</p>
-            </div>
-            <div class="widget">
-                <h3>Orders</h3>
-                <p>2</p>
-            </div>
-        </div>
 
-        <div class="chart-container">
-            <canvas id="salesChart"></canvas>
+            <div class="col-md-3">
+                <div class="card p-3">
+                    <h5>👥 Total Users</h5>
+                    <h3>{{ total_users }}</h3>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card p-3">
+                    <h5>🎤 Total Bands</h5>
+                    <h3>{{ total_bands }}</h3>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <script>
-        const ctx = document.getElementById('salesChart').getContext('2d');
-        const salesChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Sales ($)',
-                    data: [1200, 1900, 3000, 5000, 2200, 4300],
-                    backgroundColor: '#ffcc00',
-                    borderColor: '#222',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    </script>
+</div>
+
 </body>
 </html>
