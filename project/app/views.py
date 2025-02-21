@@ -8,6 +8,9 @@ from .models import *
 from .forms import *
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.shortcuts import render, redirect
+from .models import BandTeam, Booking
+from django.utils.timezone import now
 
 
 
@@ -217,6 +220,56 @@ def viewbands(request):
 def viewproducts(request):
     product=Product.objects.all()
     return render(request,'customer/viewproducts.html',{'product':product})
+
+
+
+from django.shortcuts import render, redirect
+from .models import BandTeam, Booking, Customer
+from django.utils.timezone import now
+from django.contrib import messages
+
+# Handle Band Booking
+def book_band(request, band_id):
+    if request.method == "POST":
+        band = BandTeam.objects.get(id=band_id)
+        event_date = request.POST.get("event_date")
+
+        # Ensure event_date is not in the past
+        if event_date:
+            from datetime import datetime
+
+            event_date_obj = datetime.strptime(event_date, "%Y-%m-%d").date()
+            if event_date_obj < now().date():
+                messages.error(request, "Event date cannot be in the past.")
+                return redirect("viewbands")  # Redirect back to the bands page
+
+        # Ensure customer exists
+        customer = Customer.objects.first()  # Modify this to get the logged-in user
+
+        Booking.objects.create(
+            customer=customer,
+            band=band,
+            event_date=event_date,
+            status="Pending",
+        )
+
+        messages.success(request, "Band booked successfully!")
+        return redirect("booking_history")
+
+    return redirect("viewbands")
+
+
+
+# Booking History
+def booking_history(request):
+    bookings = Booking.objects.all()  # Fetch all bookings
+    return render(request, "customer/booking_history.html", {"bookings": bookings})
+
+
+
+
+
+
 
 def products(request):
     pro=Product.objects.all()

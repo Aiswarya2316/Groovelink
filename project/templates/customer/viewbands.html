@@ -78,7 +78,7 @@
                 <li class="nav-item"><a class="nav-link text-white" href="../about">About Us</a></li>
                 <li class="nav-item"><a class="nav-link text-white" href="../viewbands">View Bands</a></li>
                 <li class="nav-item"><a class="nav-link text-white" href="../viewproducts">View Products</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="../viewbookings">My Bookings</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="../booking_history">My Bookings</a></li>
                 <li class="nav-item"><a class="nav-link text-white" href="../vieworders">My Orders</a></li>
                 <li class="nav-item"><a class="nav-link text-white" href="../logout">Logout</a></li>
             </ul>
@@ -98,12 +98,15 @@
                     <h5 class="card-title">🎸 {{ band.name }}</h5>
                     <p class="genre">🎶 Genre: {{ band.genre }}</p>
                     <p class="card-text">📜 Description: {{ band.description }}</p>
-                    <form action="#" method="POST">
+                    <form action="{% url 'book_band' band.id %}" method="POST">
                         {% csrf_token %}
+                        <label for="event_date">Event Date:</label>
+                        <input type="date" name="event_date" min="{{ today }}" required>
                         <button type="submit" class="btn btn-cart w-100">
                             <i class="fas fa-calendar-check"></i> Book Band
                         </button>
                     </form>
+                    
                 </div>
             </div>
         </div>

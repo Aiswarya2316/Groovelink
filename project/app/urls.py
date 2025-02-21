@@ -20,6 +20,8 @@ urlpatterns = [
     path('products/',views.products,name='products'),
     path('bands/',views.bands,name='bands'),
     path('users/',views.users,name='users'),
+    path("book_band/<int:band_id>/", views.book_band, name="book_band"),
+    path("booking_history/", views.booking_history, name="booking_history"),
 
 
 

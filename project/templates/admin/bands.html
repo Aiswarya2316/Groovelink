@@ -12,9 +12,68 @@
             color: #fff;
             font-family: 'Arial', sans-serif;
         }
-        .container {
-            max-width: 90%;
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            background: #1e1e1e;
+            padding-top: 20px;
+            box-shadow: 4px 0 10px rgba(255, 204, 0, 0.1);
         }
+        .sidebar h3 {
+            text-align: center;
+            color: #ffcc00;
+        }
+        .sidebar a {
+            display: block;
+            color: #ffcc00;
+            padding: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+            border-left: 4px solid transparent;
+        }
+        .sidebar a:hover {
+            background: #ffcc00;
+            color: #121212;
+            border-left: 4px solid #1db954;
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            background: #1db954;
+            padding: 15px;
+            position: fixed;
+            width: calc(100% - 250px);
+            left: 250px;
+            top: 0;
+            z-index: 1000;
+        }
+        .top-navbar a {
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            float: right;
+            margin-right: 20px;
+        }
+
+        /* Content */
+        .content {
+            margin-left: 260px;
+            margin-top: 70px;
+            padding: 20px;
+        }
+        .heading {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffcc00;
+            padding: 15px;
+        }
+
+        /* Table */
         .table {
             background-color: #1e1e1e;
             color: #ffcc00;
@@ -33,28 +92,42 @@
             background-color: rgba(255, 204, 0, 0.2);
             cursor: pointer;
         }
+
+        /* Buttons */
         .btn {
             background: #ffcc00;
             color: #121212;
             font-weight: bold;
             border-radius: 8px;
+            padding: 8px 12px;
         }
         .btn:hover {
             background: #ffa500;
             color: #fff;
         }
-        .heading {
-            text-align: center;
-            font-size: 28px;
-            font-weight: bold;
-            color: #ffcc00;
-            padding: 15px;
-        }
     </style>
 </head>
 <body>
 
-    <div class="container mt-4">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h3>Admin Panel</h3>
+        <a href="../dashboard">📊 Dashboard</a>
+        <a href="../users">👥 Users</a>
+        <a href="../orders">📦 Orders</a>
+        <a href="../products">🎸 Products</a>
+        <a href="../bands">📑 Bands</a>
+        <a href="../settings">⚙️ Bookings</a>
+        <a href="../logout">🚪 Logout</a>
+    </div>
+
+    <!-- Top Navbar -->
+    <div class="top-navbar">
+        <a href="../logout">🚪 Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
         <h2 class="heading">🎸 Band List</h2>
         
         <table class="table table-bordered text-center">
@@ -73,7 +146,6 @@
                     <td>{{ b.id }}</td>
                     <td>{{ b.name }}</td>
                     <td>{{ b.genre }}</td>
-                    
                 </tr>
                 {% endfor %}
             </tbody>

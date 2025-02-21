@@ -6,18 +6,181 @@
     <title>Manage Products - Admin</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
     <style>
-        body { background-color: #121212; color: #fff; }
-        .table { background-color: #1e1e1e; color: #ffcc00; }
-        .table th { background: #1db954; color: white; }
-        .btn { background: #ffcc00; color: #121212; }
-        .btn:hover { background: #ffa500; }
+        body {
+            background-color: #121212;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            background: #1e1e1e;
+            padding-top: 20px;
+            box-shadow: 4px 0 10px rgba(255, 204, 0, 0.1);
+        }
+        .sidebar h3 {
+            text-align: center;
+            color: #ffcc00;
+            font-weight: bold;
+        }
+        .sidebar a {
+            display: block;
+            color: #ffcc00;
+            padding: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+            border-left: 4px solid transparent;
+        }
+        .sidebar a:hover {
+            background: #ffcc00;
+            color: #121212;
+            border-left: 4px solid #1db954;
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            background: #1db954;
+            padding: 15px;
+            position: fixed;
+            width: calc(100% - 250px);
+            left: 250px;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .top-navbar a {
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+
+        /* Content */
+        .content {
+            margin-left: 260px;
+            margin-top: 70px;
+            padding: 20px;
+        }
+        .heading {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffcc00;
+            padding: 15px;
+        }
+
+        /* Table */
+        .table {
+            background-color: #1e1e1e;
+            color: #ffcc00;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .table th {
+            background: #1db954;
+            color: white;
+            text-align: center;
+        }
+        .table tbody tr {
+            transition: all 0.3s;
+        }
+        .table tbody tr:hover {
+            background-color: rgba(255, 204, 0, 0.2);
+            cursor: pointer;
+        }
+        .table img {
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+        .table img:hover {
+            transform: scale(1.1);
+        }
+
+        /* Buttons */
+        .btn {
+            background: #ffcc00;
+            color: #121212;
+            font-weight: bold;
+            border-radius: 8px;
+            padding: 8px 12px;
+        }
+        .btn:hover {
+            background: #ffa500;
+            color: #fff;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 220px;
+            }
+            .top-navbar {
+                width: calc(100% - 220px);
+                left: 220px;
+            }
+            .content {
+                margin-left: 230px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            .top-navbar {
+                width: calc(100% - 200px);
+                left: 200px;
+            }
+            .content {
+                margin-left: 210px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .sidebar {
+                display: none;
+            }
+            .top-navbar {
+                width: 100%;
+                left: 0;
+            }
+            .content {
+                margin-left: 0;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container mt-4">
-        <h2 class="text-warning text-center">Product List</h2>
-        <table class="table table-bordered mt-3">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h3>Admin Panel</h3>
+        <a href="../dashboard">📊 Dashboard</a>
+        <a href="../users">👥 Users</a>
+        <a href="../orders">📦 Orders</a>
+        <a href="../products">🎸 Products</a>
+        <a href="../bands">📑 Bands</a>
+        <a href="../settings">⚙️ Bookings</a>
+        <a href="../logout">🚪 Logout</a>
+    </div>
+
+    <!-- Top Navbar -->
+    <div class="top-navbar">
+        <a href="../logout">🚪 Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <h2 class="heading">🛍️ Product List</h2>
+        
+        <table class="table table-bordered text-center">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -31,7 +194,9 @@
                 {% for p in pro %}
                 <tr>
                     <td>{{ p.id }}</td>
-                    <td><img src="{{ p.image.url }}" width="50" height="50" alt="Product Image"></td>
+                    <td>
+                        <img src="{{ p.image.url }}" width="60" height="60" alt="Product Image">
+                    </td>
                     <td>{{ p.name }}</td>
                     <td>${{ p.price }}</td>
                     <td>{{ p.description }}</td>
@@ -40,5 +205,6 @@
             </tbody>
         </table>
     </div>
+
 </body>
 </html>
