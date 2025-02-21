@@ -79,7 +79,7 @@
                 <li class="nav-item"><a class="nav-link text-white" href="../viewbands">View Bands</a></li>
                 <li class="nav-item"><a class="nav-link text-white" href="../viewproducts">View Products</a></li>
                 <li class="nav-item"><a class="nav-link text-white" href="../booking_history">My Bookings</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="../vieworders">My Orders</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="../order_history">My Orders</a></li>
                 <li class="nav-item"><a class="nav-link text-white" href="../logout">Logout</a></li>
             </ul>
         </div>
@@ -113,6 +113,68 @@
         {% endfor %}
     </div>
 </div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    document.querySelectorAll(".buy-btn").forEach(button => {
+        button.addEventListener("click", function() {
+            let productId = this.getAttribute("data-id");
+            let productName = this.getAttribute("data-name");
+            let productPrice = this.getAttribute("data-price");
+
+            let name = prompt("Enter your Name:");
+            let email = prompt("Enter your Email:");
+            let phone = prompt("Enter your Phone Number:");
+
+            if (!name || !email || !phone) {
+                alert("All fields are required!");
+                return;
+            }
+
+            fetch(`/purchase_product/${productId}/`, {
+                method: "POST",
+                headers: { "X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, phone })
+            })
+            .then(response => response.json())
+            .then(data => {
+                let options = {
+                    "key": data.key,
+                    "amount": data.amount,
+                    "currency": "INR",
+                    "name": "Groove Link",
+                    "description": productName,
+                    "order_id": data.order_id,
+                    "handler": function (response) {
+                        fetch("/payment_success/", {
+                            method: "POST",
+                            headers: { "X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                order_id: data.order_id,
+                                payment_id: response.razorpay_payment_id,
+                                signature: response.razorpay_signature
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.status === "success") {
+                                alert("Payment Successful! Order Placed.");
+                                window.location.href = "/order_history/";
+                            } else {
+                                alert("Payment verification failed!");
+                            }
+                        });
+                    },
+                    "prefill": { "name": name, "email": email, "contact": phone },
+                    "theme": { "color": "#1db954" }
+                };
+                let rzp = new Razorpay(options);
+                rzp.open();
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    });
+</script>
+ 
 
 <!-- Footer -->
 <footer class="footer">

@@ -22,6 +22,10 @@ urlpatterns = [
     path('users/',views.users,name='users'),
     path("book_band/<int:band_id>/", views.book_band, name="book_band"),
     path("booking_history/", views.booking_history, name="booking_history"),
+    path("initiate_payment/<int:product_id>/<str:price>/", views.initiate_payment, name="initiate_payment"),
+    path("payment_success/", views.payment_success, name="payment_success"),
+    path("order_history/", views.view_order_history, name="order_history"),
+    
 
 
 

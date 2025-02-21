@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Groove Link</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+    <h2>Complete Payment for {{ product.name }}</h2>
+    <p>Price: ₹{{ amount|floatformat:2 }}</p>
+
+    <button id="payButton">Pay Now</button>
+
+    <script>
+        var options = {
+            "key": "{{ razorpay_key }}",
+            "amount": "{{ amount }}",
+            "currency": "INR",
+            "name": "Groove Link",
+            "description": "Purchase of {{ product.name }}",
+            "order_id": "{{ order_id }}",
+            "handler": function (response){
+                var form = document.createElement("form");
+                form.method = "POST";
+                form.action = "{% url 'payment_success' %}";
+                
+                var csrf = document.createElement("input");
+                csrf.type = "hidden";
+                csrf.name = "csrfmiddlewaretoken";
+                csrf.value = "{{ csrf_token }}";
+                form.appendChild(csrf);
+
+                var paymentInput = document.createElement("input");
+                paymentInput.type = "hidden";
+                paymentInput.name = "razorpay_payment_id";
+                paymentInput.value = response.razorpay_payment_id;
+                form.appendChild(paymentInput);
+
+                var orderInput = document.createElement("input");
+                orderInput.type = "hidden";
+                orderInput.name = "order_id";
+                orderInput.value = "{{ order_id }}";
+                form.appendChild(orderInput);
+
+                var productInput = document.createElement("input");
+                productInput.type = "hidden";
+                productInput.name = "product_id";
+                productInput.value = "{{ product.id }}";
+                form.appendChild(productInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            },
+            "theme": {
+                "color": "#1db954"
+            }
+        };
+        var rzp = new Razorpay(options);
+        document.getElementById("payButton").onclick = function(e){
+            rzp.open();
+            e.preventDefault();
+        }
+    </script>
+</body>
+</html>

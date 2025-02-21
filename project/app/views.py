@@ -217,9 +217,101 @@ def viewbands(request):
     band=BandTeam.objects.all()
     return render(request,'customer/viewbands.html',{'band':band})
 
+
 def viewproducts(request):
-    product=Product.objects.all()
-    return render(request,'customer/viewproducts.html',{'product':product})
+    products = Product.objects.all()
+    return render(request, 'customer/viewproducts.html', {'products': products})
+
+
+
+
+
+
+
+
+
+
+
+import razorpay
+from django.conf import settings
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Product, Order
+from django.http import JsonResponse
+
+# Initialize Razorpay Client
+razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+def initiate_payment(request, product_id, price):
+    product = get_object_or_404(Product, id=product_id)
+    
+    # Create a Razorpay Order
+    order_data = {
+        "amount": float(price) * 100,  # Razorpay expects amount in paisa
+        "currency": "INR",
+        "payment_capture": "1"
+    }
+    
+    razorpay_order = razorpay_client.order.create(order_data)
+    
+    context = {
+        "product": product,
+        "order_id": razorpay_order["id"],
+        "amount": order_data["amount"],
+        "razorpay_key": settings.RAZORPAY_KEY_ID,
+    }
+    return render(request, "customer/payment.html", context)
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from .models import Product, Order, Customer  # Ensure Customer model is imported
+
+def payment_success(request):
+    if request.method == "POST":
+        order_id = request.POST.get("order_id")
+        payment_id = request.POST.get("razorpay_payment_id")
+        product_id = request.POST.get("product_id")
+
+        # Ensure the product exists
+        product = get_object_or_404(Product, id=product_id)
+
+        # Assuming the customer is known, adjust this accordingly
+        customer = Customer.objects.first()  # Modify this logic as per your app
+
+        # Create the order
+        order = Order.objects.create(
+            customer=customer,
+            total_amount=product.price,  # Assuming 'price' is a field in Product
+            payment_status=True,  # Payment successful
+            order_status="Processing",
+        )
+
+        return redirect("order_history")  # Redirect to order history page
+
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+
+
+def view_order_history(request):
+    user_id = request.session.get("user_id")  # Ensure consistency with login session
+
+    if not user_id:
+        return redirect("login")  # Redirect if user_id is not found
+
+    customer = get_object_or_404(Customer, id=user_id)
+
+    # Fetch orders for the logged-in customer
+    orders = Order.objects.filter(customer=customer).order_by("-created_at")
+
+    return render(request, "customer/order_history.html", {"orders": orders})
+
+
+
+
+
+
+
+
+          
 
 
 

@@ -83,7 +83,7 @@
                 <li class="nav-item"><a class="nav-link text-white" href="../viewbands">View Bands</a></li>
                 <li class="nav-item"><a class="nav-link text-white" href="../viewproducts">View Products</a></li>
                 <li class="nav-item"><a class="nav-link text-white" href="../booking_history">My Bookings</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="../vieworders">My Orders</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="../order_history">My Orders</a></li>
                 <li class="nav-item"><a class="nav-link text-white" href="../logout">Logout</a></li>
             </ul>
         </div>
@@ -93,23 +93,41 @@
 <!-- Products Section -->
 <div class="container mt-5">
     <h2 class="text-center mb-4 text-warning">Browse Exclusive Music Gear</h2>
-    <div class="row">
-        {% for product in product %}
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
-                <div class="card-body">
-                    <h5 class="card-title">🎸 {{ product.name }}</h5>
-                    <p class="price">💲{{ product.price }}</p>
-                    <p class="card-text">📜 {{ product.description }}</p>
-                    <a href="../buy/{{ product.id }}" class="buy-btn">Buy Now</a>
+    {% block content %}
+    <div class="container mt-5">
+        <h2 class="text-center text-warning">🛒 Available Products</h2>
+        <div class="row">
+            {% for product in products %}
+            <div class="col-md-4">
+                <div class="card p-3 mb-4 text-center">
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">{{ product.name }}</h5>
+                        <p class="text-muted">{{ product.description }}</p>
+                        <h4 class="text-primary">₹{{ product.price }}</h4>
+                        <button class="btn btn-success buy-btn" onclick="redirectToPayment('{{ product.id }}', '{{ product.price }}')">
+                            Buy Now
+                        </button>
+                        
+                        <script>
+                        function redirectToPayment(productId, price) {
+                            window.location.href = `/initiate_payment/${productId}/${price}/`;
+                        }
+                        </script>
+                        
+                    </div>
                 </div>
             </div>
+            {% empty %}
+            <p class="text-center text-light">No products available.</p>
+            {% endfor %}
         </div>
-        {% endfor %}
+    {% endblock  %}
+    
     </div>
-</div>
-
+    
+    
+    
 <!-- Footer -->
 <footer class="footer">
     <p>&copy; 2025 Groove Link. All Rights Reserved.</p>
