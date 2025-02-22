@@ -10,113 +10,129 @@
         body {
             background-color: #121212;
             color: #fff;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
         .sidebar {
-            width: 250px;
+            width: 260px;
             height: 100vh;
             position: fixed;
-            background: #1e1e1e;
+            background: #1c1c1c;
             padding-top: 20px;
+            box-shadow: 2px 0 10px rgba(255, 204, 0, 0.2);
         }
         .sidebar a {
-            display: block;
+            display: flex;
+            align-items: center;
             color: #ffcc00;
-            padding: 15px;
+            padding: 15px 20px;
             text-decoration: none;
-            font-weight: bold;
-            transition: 0.3s;
+            font-weight: 600;
+            transition: all 0.3s;
+            border-radius: 8px;
+            margin: 10px 15px;
         }
-        .sidebar a:hover {
+        .sidebar a:hover, .sidebar a.active {
             background: #ffcc00;
             color: #121212;
         }
         .content {
-            margin-left: 260px;
-            padding: 20px;
+            margin-left: 280px;
+            padding: 30px;
         }
         .card {
             background-color: #1e1e1e;
             color: #ffcc00;
             border: none;
-            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .card:hover {
-            transform: scale(1.05);
-            box-shadow: 0px 4px 15px rgba(255, 204, 0, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0px 4px 20px rgba(255, 204, 0, 0.3);
+        }
+        .dashboard-header {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+            color: #ffcc00;
         }
         .top-navbar {
             background: #1db954;
-            padding: 15px;
-            text-align: right;
+            padding: 15px 30px;
+            position: fixed;
+            width: calc(100% - 260px);
+            top: 0;
+            left: 260px;
+            z-index: 1000;
+            display: flex;
+            justify-content: flex-end;
         }
         .top-navbar a {
             color: white;
             font-weight: bold;
             text-decoration: none;
-            margin-right: 20px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .top-navbar a:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
 <body>
-
-<!-- Sidebar -->
-<div class="sidebar">
-    <h3 class="text-center text-warning">Admin Panel</h3>
-    <a href="../dashboard">📊 Dashboard</a>
-    <a href="../users">👥 Users</a>
-    <a href="../orders">📦 Orders</a>
-    <a href="../products">🎸 Products</a>
-    <a href="../bands">📑 Bands</a>
-    <a href="../settings">⚙️ Bookings</a>
-    <a href="../logout">🚪 Logout</a>
-</div>
-
-<!-- Main Content -->
-<div class="content">
-    
-    <!-- Top Navbar -->
+    <div class="sidebar">
+        <h3 class="text-center text-warning">Admin Panel</h3>
+        <a href="../adminhome" class="active">📊 Dashboard</a>
+        <a href="../users">👥 Users</a>
+        <a href="../orders">📦 Orders</a>
+        <a href="../products">🎸 Products</a>
+        <a href="../bands">📑 Bands</a>
+        <a href="../bookings">⚙️ Bookings</a>
+        <a href="../logout">🚪 Logout</a>
+    </div>
     <div class="top-navbar">
         <a href="../logout">🚪 Logout</a>
     </div>
-
-    <!-- Dashboard Overview -->
-    <div class="container mt-4">
-        <h2 class="text-warning">Dashboard Overview</h2>
-        <div class="row mt-3">
-            
-            <div class="col-md-3">
-                <div class="card p-3">
-                    <h5>📦 Total Orders</h5>
-                    <h3>{{ total_orders }}</h3>
+    <div class="content mt-5">
+        <div class="container">
+            <div class="dashboard-header">Dashboard Overview</div>
+            <div class="row mt-4">
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <h5>📦 Total Orders</h5>
+                        <h3>{{ total_orders }}</h3>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <h5>🎸 Products</h5>
+                        <h3>{{ total_products }}</h3>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <h5>👥 Total Users</h5>
+                        <h3>{{ total_users }}</h3>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <h5>🎸 Total Bookings</h5>
+                        <h3>{{ total_bookings }}</h3>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <h5>🎤 Total Bands</h5>
+                        <h3>{{ total_bands }}</h3>
+                    </div>
                 </div>
             </div>
-
-            <div class="col-md-3">
-                <div class="card p-3">
-                    <h5>🎸 Products</h5>
-                    <h3>{{ total_products }}</h3>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card p-3">
-                    <h5>👥 Total Users</h5>
-                    <h3>{{ total_users }}</h3>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card p-3">
-                    <h5>🎤 Total Bands</h5>
-                    <h3>{{ total_bands }}</h3>
-                </div>
-            </div>
-
         </div>
     </div>
-
-</div>
-
 </body>
 </html>

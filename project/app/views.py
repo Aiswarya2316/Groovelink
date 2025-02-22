@@ -122,12 +122,14 @@ def adminhome(request):
     total_products = Product.objects.count()
     total_bands = BandTeam.objects.count()
     total_orders = Order.objects.count()
+    total_bookings=Booking.objects.count()
 
     context = {
         'total_users': total_users,
         'total_products': total_products,
         'total_bands': total_bands,
-        'total_orders': total_orders
+        'total_orders': total_orders,
+        'total_bookings':total_bookings
     }
     return render(request, 'admin/adminhome.html', context)
 
@@ -374,3 +376,11 @@ def bands(request):
 def users(request):
     usr=Customer.objects.all()
     return render(request,'admin/users.html',{'usr':usr})
+
+def orders(request):
+    ordr=Order.objects.all()
+    return render(request,'admin/orders.html',{'ordr':ordr})
+
+def bookings(request):
+    bkngs=Booking.objects.all()
+    return render(request,'admin/bookings.html',{'bkngs':bkngs})

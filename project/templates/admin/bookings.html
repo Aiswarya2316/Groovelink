@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Products - Admin</title>
+    <title>Manage Bands - Admin</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
     <style>
         body {
             background-color: #121212;
@@ -26,7 +25,6 @@
         .sidebar h3 {
             text-align: center;
             color: #ffcc00;
-            font-weight: bold;
         }
         .sidebar a {
             display: block;
@@ -52,13 +50,12 @@
             left: 250px;
             top: 0;
             z-index: 1000;
-            display: flex;
-            justify-content: flex-end;
         }
         .top-navbar a {
             color: white;
             font-weight: bold;
             text-decoration: none;
+            float: right;
             margin-right: 20px;
         }
 
@@ -95,13 +92,6 @@
             background-color: rgba(255, 204, 0, 0.2);
             cursor: pointer;
         }
-        .table img {
-            border-radius: 10px;
-            transition: transform 0.3s;
-        }
-        .table img:hover {
-            transform: scale(1.1);
-        }
 
         /* Buttons */
         .btn {
@@ -115,46 +105,6 @@
             background: #ffa500;
             color: #fff;
         }
-
-        /* Responsive Design */
-        @media (max-width: 992px) {
-            .sidebar {
-                width: 220px;
-            }
-            .top-navbar {
-                width: calc(100% - 220px);
-                left: 220px;
-            }
-            .content {
-                margin-left: 230px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 200px;
-            }
-            .top-navbar {
-                width: calc(100% - 200px);
-                left: 200px;
-            }
-            .content {
-                margin-left: 210px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .sidebar {
-                display: none;
-            }
-            .top-navbar {
-                width: 100%;
-                left: 0;
-            }
-            .content {
-                margin-left: 0;
-            }
-        }
     </style>
 </head>
 <body>
@@ -167,7 +117,7 @@
         <a href="../orders">📦 Orders</a>
         <a href="../products">🎸 Products</a>
         <a href="../bands">📑 Bands</a>
-        <a href="../bookings">⚙️ Bookings</a>
+        <a href="../settings">⚙️ Bookings</a>
         <a href="../logout">🚪 Logout</a>
     </div>
 
@@ -178,28 +128,31 @@
 
     <!-- Main Content -->
     <div class="content">
-        <h2 class="heading">🛍️ Product List</h2>
+        <h2 class="heading">🎸 Orders</h2>
         
         <table class="table table-bordered text-center">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Image</th>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Description</th>
+                    <th>S.NO</th>
+                    <th>Customer</th>
+                    <th>Band</th>
+                    <th>Event Date</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+
                 </tr>
             </thead>
             <tbody>
-                {% for p in pro %}
+                {% for b in bkngs %}
                 <tr>
-                    <td>{{ p.id }}</td>
-                    <td>
-                        <img src="{{ p.image.url }}" width="60" height="60" alt="Product Image">
-                    </td>
-                    <td>{{ p.name }}</td>
-                    <td>${{ p.price }}</td>
-                    <td>{{ p.description }}</td>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ b.customer }}</td>
+                    <td>{{ b.band }}</td>
+                    <td>{{ b.event_date }}</td>
+                    <td>{{ b.status }}</td>
+                    <td>{{ b.created_at }}</td>
+
+
                 </tr>
                 {% endfor %}
             </tbody>
