@@ -93,6 +93,7 @@ class BandTeam(models.Model):
     name = models.CharField(max_length=100)
     genre = models.CharField(max_length=100)
     description = models.TextField()
+    booking_fee=models.IntegerField()
     image = models.ImageField(upload_to="bands/")
 
     def __str__(self):
@@ -108,16 +109,26 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-# ✅ Booking model for customers to book a band without payment
+
+    
+    from django.db import models
+
 class Booking(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="bookings", null=True, blank=True)
     band = models.ForeignKey(BandTeam, on_delete=models.CASCADE, related_name="bookings")
     event_date = models.DateField()
-    status = models.CharField(max_length=20, choices=[("Pending", "Pending"), ("Confirmed", "Confirmed")], default="Pending")
+    status = models.CharField(
+        max_length=20, 
+        choices=[("Pending", "Pending"), ("Confirmed", "Confirmed")], 
+        default="Pending"
+    )
+    payment_id = models.CharField(max_length=100, blank=True, null=True)  # Store Razorpay payment ID
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.band.name} booked on {self.event_date}"
+        return f"{self.band.name} booked on {self.event_date} by {self.customer.email}"
+
+
 
 
 # ✅ Order model updated for Pay Later feature

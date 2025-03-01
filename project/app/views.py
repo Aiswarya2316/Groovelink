@@ -222,7 +222,9 @@ def viewbands(request):
 
 def viewproducts(request):
     products = Product.objects.all()
-    return render(request, 'customer/viewproducts.html', {'products': products})
+    days_range = range(1, 31)  # Generate the range in Python
+    return render(request, 'customer/viewproducts.html', {'products': products, 'days_range': days_range})
+
 
 
 
@@ -243,12 +245,12 @@ from django.http import JsonResponse
 # Initialize Razorpay Client
 razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 
-def initiate_payment(request, product_id, price):
+def initiate_payment(request, product_id, days, total_price):
     product = get_object_or_404(Product, id=product_id)
     
     # Create a Razorpay Order
     order_data = {
-        "amount": float(price) * 100,  # Razorpay expects amount in paisa
+        "amount": float(total_price) * 100,  # Convert to paisa
         "currency": "INR",
         "payment_capture": "1"
     }
@@ -259,9 +261,11 @@ def initiate_payment(request, product_id, price):
         "product": product,
         "order_id": razorpay_order["id"],
         "amount": order_data["amount"],
+        "days": days,
         "razorpay_key": settings.RAZORPAY_KEY_ID,
     }
     return render(request, "customer/payment.html", context)
+
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
@@ -308,59 +312,127 @@ def view_order_history(request):
 
 
 
-
-
-
-
-
-          
-
-
-
+import razorpay
+import json
+from django.conf import settings
 from django.shortcuts import render, redirect
-from .models import BandTeam, Booking, Customer
 from django.utils.timezone import now
 from django.contrib import messages
+from django.http import JsonResponse
+from django.urls import reverse
+from .models import BandTeam, Booking, Customer
+from datetime import datetime
+from razorpay.errors import SignatureVerificationError
 
-# Handle Band Booking
+# ✅ Booking View with Razorpay Integration
+client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 def book_band(request, band_id):
     if request.method == "POST":
         band = BandTeam.objects.get(id=band_id)
         event_date = request.POST.get("event_date")
+        customer_email = request.POST.get("email")
 
-        # Ensure event_date is not in the past
-        if event_date:
-            from datetime import datetime
+        event_date_obj = datetime.strptime(event_date, "%Y-%m-%d").date()
+        if event_date_obj < now().date():
+            messages.error(request, "Event date cannot be in the past.")
+            return redirect("viewbands")
 
-            event_date_obj = datetime.strptime(event_date, "%Y-%m-%d").date()
-            if event_date_obj < now().date():
-                messages.error(request, "Event date cannot be in the past.")
-                return redirect("viewbands")  # Redirect back to the bands page
+        # ✅ Fetch customer using email
+        try:
+            customer = Customer.objects.get(email=customer_email)
+        except Customer.DoesNotExist:
+            messages.error(request, "Customer not found. Please provide a valid email.")
+            return redirect("viewbands")
 
-        # Ensure customer exists
-        customer = Customer.objects.first()  # Modify this to get the logged-in user
+        # ✅ Create Razorpay Order
+        amount = int(band.booking_fee * 100)  # Convert to paise
+        order_data = {
+            "amount": amount,
+            "currency": "INR",
+            "payment_capture": "1",
+        }
+        order = client.order.create(order_data)
 
-        Booking.objects.create(
-            customer=customer,
-            band=band,
-            event_date=event_date,
-            status="Pending",
-        )
+        # ✅ Store booking details in session
+        request.session["booking_details"] = {
+            "customer_email": customer_email,
+            "band_id": band.id,
+            "event_date": event_date,
+            "order_id": order["id"],
+            "amount": amount,
+        }
 
-        messages.success(request, "Band booked successfully!")
-        return redirect("booking_history")
+        return render(request, "customer/payment_page.html", {
+            "razorpay_key": settings.RAZORPAY_KEY_ID,
+            "order_id": order["id"],
+            "amount": band.booking_fee,  
+            "band": band,
+        })
 
     return redirect("viewbands")
 
 
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+import json
+import razorpay
+from django.conf import settings
+from .models import BandTeam, Booking, Customer
+from razorpay.errors import SignatureVerificationError
 
-# Booking History
+from django.http import JsonResponse
+
+@csrf_exempt
+def paymentsuccess(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            razorpay_payment_id = data.get("razorpay_payment_id")
+            razorpay_order_id = data.get("razorpay_order_id")
+            razorpay_signature = data.get("razorpay_signature")
+
+            client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+            params_dict = {
+                "razorpay_order_id": razorpay_order_id,
+                "razorpay_payment_id": razorpay_payment_id,
+                "razorpay_signature": razorpay_signature,
+            }
+            client.utility.verify_payment_signature(params_dict)
+
+            booking_details = request.session.get("booking_details")
+            if not booking_details:
+                return JsonResponse({"success": False, "message": "Session expired. Please try again."}, status=400)
+
+            customer = Customer.objects.get(email=booking_details["customer_email"])
+            band = BandTeam.objects.get(id=booking_details["band_id"])
+
+            booking, created = Booking.objects.get_or_create(
+                customer=customer,
+                band=band,
+                event_date=booking_details["event_date"],
+                defaults={"status": "Confirmed", "payment_id": razorpay_payment_id}
+            )
+
+            if not created:
+                booking.status = "Confirmed"
+                booking.payment_id = razorpay_payment_id
+                booking.save()
+
+            request.session.pop("booking_details", None)
+            return JsonResponse({"success": True, "message": "Payment successful!"})
+
+        except SignatureVerificationError:
+            return JsonResponse({"success": False, "message": "Payment verification failed. Please contact support."}, status=400)
+        except Exception as e:
+            return JsonResponse({"success": False, "message": f"Error: {e}"}, status=400)
+
+    return JsonResponse({"success": False, "message": "Invalid request method."}, status=405)
+
+
+# ✅ Booking History View
 def booking_history(request):
-    bookings = Booking.objects.all()  # Fetch all bookings
+    bookings = Booking.objects.filter(status="Confirmed")  # Fetch only confirmed bookings
     return render(request, "customer/booking_history.html", {"bookings": bookings})
-
-
-
 
 
 

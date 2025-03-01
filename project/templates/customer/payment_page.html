@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Groove Link</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+    <h2>Complete Your Payment for {{ band.name }}</h2>
+    <p>Amount: ₹{{ amount }}</p>  
+
+    <button id="pay-btn">Proceed to Payment</button>
+
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                const cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith(name + "=")) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var options = {
+            "key": "{{ razorpay_key }}",
+            "amount": {{ amount }} * 100,  // Ensure amount is correctly passed in paise
+            "currency": "INR",
+            "order_id": "{{ order_id }}",
+            "name": "Groove Link",
+            "description": "Band Booking Payment",
+            "handler": function (response) {
+                fetch("/paymentsuccess/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCookie("csrftoken"),
+                    },
+                    body: JSON.stringify({
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature,
+                    }),
+                })
+                .then(response => response.text())  // ✅ Convert response to text instead of JSON
+                .then(data => {
+                    console.log("Server response:", data);
+                    try {
+                        let jsonData = JSON.parse(data);
+                        if (jsonData.status === "success") {
+                            alert("Payment Successful! Redirecting...");
+                            window.location.href = jsonData.redirect_url;
+                        } else {
+                            alert("Payment verification failed: " + jsonData.message);
+                        }
+                    } catch (error) {
+                        alert("Unexpected response from server. Check console for details.");
+                        console.error("Server response error:", data);
+                    }
+                })
+                .catch(error => {
+                    alert("Error processing payment: " + error);
+                    console.error("Fetch error:", error);
+                });
+                
+            },
+            "theme": { "color": "#1db954" }
+        };
+
+        document.getElementById("pay-btn").onclick = function () {
+            var rzp = new Razorpay(options);
+            rzp.open();
+        };
+    </script>
+</body>
+</html>

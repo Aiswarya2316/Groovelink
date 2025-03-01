@@ -102,10 +102,15 @@
                         {% csrf_token %}
                         <label for="event_date">Event Date:</label>
                         <input type="date" name="event_date" min="{{ today }}" required>
+                    
+                        <label for="email">Your Email:</label>
+                        <input type="email" name="email" required>
+                    
                         <button type="submit" class="btn btn-cart w-100">
                             <i class="fas fa-calendar-check"></i> Book Band
                         </button>
                     </form>
+                    
                     
                 </div>
             </div>

@@ -24,9 +24,10 @@ urlpatterns = [
     path('bookings/',views.bookings,name='bookings'),
     path("book_band/<int:band_id>/", views.book_band, name="book_band"),
     path("booking_history/", views.booking_history, name="booking_history"),
-    path("initiate_payment/<int:product_id>/<str:price>/", views.initiate_payment, name="initiate_payment"),
+    path('initiate_payment/<int:product_id>/<int:days>/<int:total_price>/', views.initiate_payment, name='initiate_payment'),
     path("payment_success/", views.payment_success, name="payment_success"),
     path("order_history/", views.view_order_history, name="order_history"),
+    path('paymentsuccess/', views.paymentsuccess, name='paymentsuccess'),
     
 
 
