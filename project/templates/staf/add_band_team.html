@@ -171,15 +171,36 @@
         </div>
     </nav>
 
-    <!-- Form Content -->
-    <div class="content">
-        <h2>Manage Your Band</h2>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Submit</button>
-        </form>
-    </div>
+{% block content %}
+<div class="container">
+    <h2>Add Band Team</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div>
+            <label for="id_name">Band Name:</label>
+            {{ form.name }}
+        </div>
+        <div>
+            <label for="id_genre">Genre:</label>
+            {{ form.genre }}
+        </div>
+        <div>
+            <label for="id_description">Description:</label>
+            {{ form.description }}
+        </div>
+        <div>
+            <label for="id_booking_fee">Booking Fee:</label>
+            {{ form.booking_fee }}
+        </div>
+        <div>
+            <label for="id_image">Image:</label>
+            {{ form.image }}
+        </div>
+        <button type="submit">Add Band</button>
+    </form>
+</div>
+{% endblock %}
+
 
 </body>
 </html>

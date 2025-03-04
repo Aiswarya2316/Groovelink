@@ -56,12 +56,13 @@ class LoginForm(forms.Form):
 
 
 from django import forms
-from .models import BandTeam, Product
+from .models import BandTeam
 
 class BandTeamForm(forms.ModelForm):
     class Meta:
         model = BandTeam
-        fields = ["name", "genre", "description", "image"]
+        fields = ["name", "genre", "description", "booking_fee", "image"]  # Added booking_fee field
+
 
 class ProductForm(forms.ModelForm):
     class Meta:

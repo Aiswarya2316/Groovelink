@@ -146,7 +146,10 @@ from .models import BandTeam, Product, Staf, Customer, AdminReg
 from .forms import BandTeamForm, ProductForm, LoginForm
 
 # --- Band Team Management ---
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from .models import BandTeam, Staf
+from .forms import BandTeamForm
 
 def add_band_team(request):
     if "user_id" not in request.session or request.session["user_type"] != "Seller":
