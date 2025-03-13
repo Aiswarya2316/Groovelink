@@ -12,12 +12,36 @@
             color: #fff;
             font-family: 'Arial', sans-serif;
         }
-        .navbar {
+        /* Navbar */
+        nav {
             background: #1db954;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0 15px;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
         }
         .navbar-brand {
+            font-size: 22px;
             font-weight: bold;
-            color: #fff;
+            color: #ffcc00 !important;
         }
         .card {
             background-color: #1e1e1e;
@@ -32,7 +56,7 @@
             box-shadow: 0px 4px 15px rgba(255, 204, 0, 0.3);
         }
         .card img {
-            height: 220px;
+            height: 200px;
             object-fit: cover;
             border-radius: 10px;
         }
@@ -56,6 +80,10 @@
         .btn-cart:hover {
             background: #ffaa00;
             transform: scale(1.05);
+        }
+        .order-status {
+            font-weight: bold;
+            color: #1db954;
         }
         .footer {
             background: #1db954;
@@ -100,10 +128,10 @@
                     <p class="card-text">📜 Description: {{ band.description }}</p>
                     <form action="{% url 'book_band' band.id %}" method="POST">
                         {% csrf_token %}
-                        <label for="event_date">Event Date:</label>
+                        <label for="event_date" class="order-status">Event Date::</label>
                         <input type="date" name="event_date" min="{{ today }}" required>
                     
-                        <label for="email">Your Email:</label>
+                        <label for="email" class="order-status">Your Email::</label>
                         <input type="email" name="email" required>
                     
                         <button type="submit" class="btn btn-cart w-100">

@@ -5,12 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment - Groove Link</title>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #121212;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .payment-container {
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+        .btn-pay {
+            background: #1db954;
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-pay:hover {
+            background: #17a44a;
+        }
+    </style>
 </head>
 <body>
-    <h2>Complete Payment for {{ product.name }}</h2>
-    <p>Price: ₹{{ amount|floatformat:2 }}</p>
-
-    <button id="payButton">Pay Now</button>
+    <div class="payment-container">
+        <h2>Complete Payment for {{ product.name }}</h2>
+        <p class="fs-5">Price: <strong>₹{{ amount|floatformat:2 }}</strong></p>
+        <button id="payButton" class="btn-pay">Pay Now</button>
+    </div>
 
     <script>
         var options = {

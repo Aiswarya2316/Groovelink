@@ -5,12 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment - Groove Link</title>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        /* General Styles */
+        body {
+            background-color: #121212;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .payment-container {
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .payment-container h2 {
+            color: #1db954;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .payment-container p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .btn-pay {
+            background: #ffcc00;
+            color: #121212;
+            font-weight: 600;
+            padding: 12px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            font-size: 16px;
+            border: none;
+            width: 100%;
+        }
+
+        .btn-pay:hover {
+            background: #ffa500;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
-    <h2>Complete Your Payment for {{ band.name }}</h2>
-    <p>Amount: ₹{{ amount }}</p>  
 
-    <button id="pay-btn">Proceed to Payment</button>
+    <div class="payment-container">
+        <h2>Complete Your Payment</h2>
+        <p>Booking for: <strong>{{ band.name }}</strong></p>
+        <p>Amount: <strong>₹{{ amount }}</strong></p>
+        <button id="pay-btn" class="btn-pay">Proceed to Payment</button>
+    </div>
 
     <script>
         function getCookie(name) {
@@ -30,7 +86,7 @@
 
         var options = {
             "key": "{{ razorpay_key }}",
-            "amount": {{ amount }} * 100,  // Ensure amount is correctly passed in paise
+            "amount": {{ amount }} * 100, 
             "currency": "INR",
             "order_id": "{{ order_id }}",
             "name": "Groove Link",
@@ -48,27 +104,19 @@
                         razorpay_signature: response.razorpay_signature,
                     }),
                 })
-                .then(response => response.text())  // ✅ Convert response to text instead of JSON
+                .then(response => response.json())
                 .then(data => {
-                    console.log("Server response:", data);
-                    try {
-                        let jsonData = JSON.parse(data);
-                        if (jsonData.status === "success") {
-                            alert("Payment Successful! Redirecting...");
-                            window.location.href = jsonData.redirect_url;
-                        } else {
-                            alert("Payment verification failed: " + jsonData.message);
-                        }
-                    } catch (error) {
-                        alert("Unexpected response from server. Check console for details.");
-                        console.error("Server response error:", data);
+                    if (data.status === "success") {
+                        alert("Payment Successful! Redirecting...");
+                        window.location.href = data.redirect_url;
+                    } else {
+                        alert("Payment verification failed: " + data.message);
                     }
                 })
                 .catch(error => {
                     alert("Error processing payment: " + error);
                     console.error("Fetch error:", error);
                 });
-                
             },
             "theme": { "color": "#1db954" }
         };
@@ -78,5 +126,6 @@
             rzp.open();
         };
     </script>
+
 </body>
 </html>
