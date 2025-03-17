@@ -103,6 +103,7 @@
         {% for order in orders %}
             <div class="order-card">
                 <h5>Customer: <span class="text-success">{{ order.customer.name }}</span></h5>
+                <p>Product: <strong class="order-status">₹{{ order.product.name }}</strong></p>
                 <p>Price: <strong class="order-status">₹{{ order.total_amount }}</strong></p>
                 <p>Status: <span class="order-status">{{ order.order_status }}</span></p>
                 <p>Order Date: <span class="order-status">{{ order.created_at|date:"F d, Y" }}</span></p>

@@ -76,6 +76,7 @@ class Booking(models.Model):
 
 # ✅ Order model updated for Pay Later feature
 class Order(models.Model):
+    product=models.ForeignKey(Product, on_delete=models.CASCADE, related_name="orders")
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="orders")
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_status = models.BooleanField(default=False)  # False means unpaid
@@ -88,5 +89,7 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order #{self.id} - {self.customer.name}"
+
+
 
 
