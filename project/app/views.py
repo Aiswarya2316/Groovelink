@@ -289,6 +289,7 @@ def payment_success(request):
         # Create the order
         order = Order.objects.create(
             customer=customer,
+            product=product,  # Add the product here
             total_amount=product.price,  # Assuming 'price' is a field in Product
             payment_status=True,  # Payment successful
             order_status="Processing",
