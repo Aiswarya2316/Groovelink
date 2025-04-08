@@ -276,43 +276,54 @@ from .models import Product, Order, Customer  # Ensure Customer model is importe
 
 def payment_success(request):
     if request.method == "POST":
-        order_id = request.POST.get("order_id")
-        payment_id = request.POST.get("razorpay_payment_id")
-        product_id = request.POST.get("product_id")
+        if "user_id" in request.session and request.session.get("user_type") == "Customer":
+            customer_id = request.session["user_id"]
+            try:
+                customer = Customer.objects.get(id=customer_id)
+            except Customer.DoesNotExist:
+                messages.error(request, "Customer not found.")
+                return redirect("login")
 
-        # Ensure the product exists
-        product = get_object_or_404(Product, id=product_id)
+            order_id = request.POST.get("order_id")
+            payment_id = request.POST.get("razorpay_payment_id")
+            product_id = request.POST.get("product_id")
 
-        # Assuming the customer is known, adjust this accordingly
-        customer = Customer.objects.first()  # Modify this logic as per your app
+            product = get_object_or_404(Product, id=product_id)
 
-        # Create the order
-        order = Order.objects.create(
-            customer=customer,
-            product=product,  # Add the product here
-            total_amount=product.price,  # Assuming 'price' is a field in Product
-            payment_status=True,  # Payment successful
-            order_status="Processing",
-        )
+            order = Order.objects.create(
+                customer=customer,
+                product=product,
+                total_amount=product.price,
+                payment_status=True,
+                order_status="Processing",
+            )
 
-        return redirect("order_history")  # Redirect to order history page
+            return redirect("order_history")
+        else:
+            messages.error(request, "You need to log in to complete the payment.")
+            return redirect("login")
 
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 
 
 def view_order_history(request):
-    user_id = request.session.get("user_id")  # Ensure consistency with login session
+    if "user_id" in request.session and request.session.get("user_type") == "Customer":
+        customer_id = request.session["user_id"]
+        print("Logged-in User ID:", customer_id)  # Debugging
 
-    if not user_id:
-        return redirect("login")  # Redirect if user_id is not found
+        try:
+            customer = Customer.objects.get(id=customer_id)  # Fetch the specific customer
+            orders = Order.objects.filter(customer=customer).order_by("-created_at")  # Filter only their orders
 
-    customer = get_object_or_404(Customer, id=user_id)
+            return render(request, "customer/order_history.html", {"orders": orders})
+        except Customer.DoesNotExist:
+            messages.error(request, "Customer not found.")
+            return redirect("login")
 
-    # Fetch orders for the logged-in customer
-    orders = Order.objects.filter(customer=customer).order_by("-created_at")
+    messages.error(request, "You need to log in to view your bookings.")
+    return redirect("login")
 
-    return render(request, "customer/order_history.html", {"orders": orders})
 
 
 
@@ -423,7 +434,12 @@ def paymentsuccess(request):
                 booking.save()
 
             request.session.pop("booking_details", None)
-            return JsonResponse({"success": True, "message": "Payment successful!"})
+            return JsonResponse({
+                "status": "success",
+                "redirect_url": reverse("booking_history")
+            })
+
+
 
         except SignatureVerificationError:
             return JsonResponse({"success": False, "message": "Payment verification failed. Please contact support."}, status=400)
@@ -433,10 +449,26 @@ def paymentsuccess(request):
     return JsonResponse({"success": False, "message": "Invalid request method."}, status=405)
 
 
-# ✅ Booking History View
+from django.contrib import messages
+from .models import Booking, Customer  # Ensure Booking and Customer are imported
+
 def booking_history(request):
-    bookings = Booking.objects.filter(status="Confirmed")  # Fetch only confirmed bookings
-    return render(request, "customer/booking_history.html", {"bookings": bookings})
+    if "user_id" in request.session and request.session.get("user_type") == "Customer":
+        customer_id = request.session["user_id"]
+
+        try:
+            customer = Customer.objects.get(id=customer_id)
+            bookings = Booking.objects.filter(customer=customer, status="Confirmed").order_by("-created_at")
+            return render(request, "customer/booking_history.html", {"bookings": bookings})
+
+        except Customer.DoesNotExist:
+            messages.error(request, "Customer not found.")
+            return redirect("login")
+
+    messages.error(request, "You need to log in to view your booking history.")
+    return redirect("login")
+
+
 
 
 
@@ -460,3 +492,69 @@ def orders(request):
 def bookings(request):
     bkngs=Booking.objects.all()
     return render(request,'admin/bookings.html',{'bkngs':bkngs})
+
+
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from .models import Booking  # Replace with your actual model name
+
+def cancel_booking(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+
+    if request.method == "POST":
+        booking.status = "Cancelled"
+        booking.save()
+        messages.success(request, "Booking cancelled successfully.")
+    
+    return redirect('booking_history')  # Adjust this to your actual bookings view name
+
+
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from .models import Order  # Replace with your actual model name
+
+def cancel_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    if request.method == "POST":
+        order.order_status = "Cancelled"
+        order.save()
+        messages.success(request, "Order cancelled successfully.")
+    
+    return redirect('order_history')  # Replace with the actual name of your order history view
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from .models import Booking, Feedback  # assuming you have a Feedback model
+
+def give_feedback(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    
+    if request.method == 'POST':
+        feedback_text = request.POST.get('feedback')
+        Feedback.objects.create(
+            booking=booking,
+            customer=request.user,  # assuming the user is logged in
+            comment=feedback_text
+        )
+        messages.success(request, 'Thank you for your feedback!')
+        return redirect('booking_history')
+
+    return render(request, 'customer/feedback_form.html', {'booking': booking})
+
+
+
+
+def delete_band(request, id):
+    band = get_object_or_404(BandTeam, id=id)
+    band.delete()
+    return redirect('view_band_teams')  # Replace with your actual view name
+
+from django.shortcuts import redirect, get_object_or_404
+from .models import Product  # adjust import as needed
+
+def delete_product(request, id):
+    product = get_object_or_404(Product, id=id)
+    product.delete()
+    return redirect('view_products')  # replace with the actual name of your view

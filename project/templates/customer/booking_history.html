@@ -107,23 +107,38 @@
                 <thead>
                     <tr>
                         <th>Band Name</th>
+                        <th>Amount Paid</th>
                         <th>Event Date</th>
                         <th>Status</th>
+                        <th>Actions</th> <!-- New Column -->
                     </tr>
                 </thead>
                 <tbody>
                     {% for booking in bookings %}
                     <tr>
                         <td>{{ booking.band.name }}</td>
+                        <td>{{ booking.band.booking_fee }}</td>
                         <td>{{ booking.event_date }}</td>
                         <td>{{ booking.status }}</td>
+                        <td>
+                            {% if booking.status != 'Cancelled' %}
+                                <form action="{% url 'cancel_booking' booking.id %}" method="POST" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
+                                </form>
+                                <a href="{% url 'give_feedback' booking.id %}" class="btn btn-sm btn-warning mt-1">Give Feedback</a>
+                            {% else %}
+                                <span class="text-muted">Cancelled</span>
+                            {% endif %}
+                        </td>                        
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="3" class="text-center text-light">No bookings found.</td>
+                        <td colspan="4" class="text-center text-light">No bookings found.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
+                
             </table>
         </div>
         <a href="../viewbands" class="btn btn-back">⬅ Back to Bands</a>

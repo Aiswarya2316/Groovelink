@@ -15,6 +15,7 @@ class Staf(models.Model):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
+    phone = models.PositiveBigIntegerField()
 
     def __str__(self):
         return self.name
@@ -91,5 +92,12 @@ class Order(models.Model):
         return f"Order #{self.id} - {self.customer.name}"
 
 
+class Feedback(models.Model):
+    booking = models.ForeignKey(Booking, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    comment = models.TextField()
+    submitted_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"Feedback for {self.booking.band.name} by {self.customer.name}"
 

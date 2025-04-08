@@ -184,6 +184,7 @@
                     <th>Image</th>
                     <th>Name</th>
                     <th>Genre</th>
+                    <th>Actions</th> <!-- New column header -->
                 </tr>
             </thead>
             <tbody>
@@ -198,10 +199,19 @@
                     </td>
                     <td>{{ band.name }}</td>
                     <td>{{ band.genre }}</td>
+                    <td>
+                        <form action="{% url 'deleteband' band.id %}" method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" style="background-color: #e74c3c; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        
     </div>
 
 </body>

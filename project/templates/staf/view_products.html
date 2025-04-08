@@ -185,6 +185,7 @@
                     <th>Image</th>
                     <th>Product Name</th>
                     <th>Price</th>
+                    <th>Actions</th> <!-- New column -->
                 </tr>
             </thead>
             <tbody>
@@ -199,11 +200,18 @@
                     </td>
                     <td>{{ product.name }}</td>
                     <td>${{ product.price }}</td>
+                    <td>
+                        <form action="{% url 'deleteproduct' product.id %}" method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" style="background-color: #e74c3c; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-
 </body>
 </html>

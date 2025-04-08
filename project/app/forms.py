@@ -1,5 +1,8 @@
 from django import forms
 from .models import *
+import re
+
+
 
 class CustomerRegistrationForm(forms.ModelForm):
     confirm_password = forms.CharField(widget=forms.PasswordInput())
@@ -17,12 +20,20 @@ class CustomerRegistrationForm(forms.ModelForm):
             raise forms.ValidationError("Passwords do not match.")
         return cleaned_data
 
+    def clean_phone(self):
+        phone = self.cleaned_data.get("phone")
+        phone_str = str(phone)
+        if not re.match(r'^\d{10}$', phone_str):
+            raise forms.ValidationError("Phone number must be exactly 10 digits.")
+        return phone
+
+
 class StafRegistrationForm(forms.ModelForm):
     confirm_password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
         model = Staf
-        fields = ['name', 'email', 'password', 'location']
+        fields = ['name', 'email', 'password', 'location', 'phone']
         widgets = {
             'password': forms.PasswordInput()
         }
@@ -32,6 +43,16 @@ class StafRegistrationForm(forms.ModelForm):
         if cleaned_data.get("password") != cleaned_data.get("confirm_password"):
             raise forms.ValidationError("Passwords do not match.")
         return cleaned_data
+
+
+    def clean_phone(self):
+        phone = self.cleaned_data.get("phone")
+        phone_str = str(phone)
+        if not re.match(r'^\d{10}$', phone_str):
+            raise forms.ValidationError("Phone number must be exactly 10 digits.")
+        return phone
+
+
 
 class AdminRegistrationForm(forms.ModelForm):
     confirm_password = forms.CharField(widget=forms.PasswordInput())

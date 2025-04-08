@@ -28,7 +28,12 @@ urlpatterns = [
     path("payment_success/", views.payment_success, name="payment_success"),
     path("order_history/", views.view_order_history, name="order_history"),
     path('paymentsuccess/', views.paymentsuccess, name='paymentsuccess'),
-    
+    path('cancel_booking/<int:booking_id>/', views.cancel_booking, name='cancel_booking'),
+    path('cancel_order/<int:order_id>/', views.cancel_order, name='cancel_order'),
+    path('feedback/<int:booking_id>/', views.give_feedback, name='give_feedback'),
+    path('deleteband/<int:id>/', views.delete_band, name='deleteband'),
+    path('deleteproduct/<int:id>/', views.delete_product, name='deleteproduct'),
+
 
 
 
